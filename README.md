@@ -137,63 +137,103 @@ Voici le résultat attendu à ce stade :
 
 ## Étape 4 : compter les tâches restantes
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Étape 4 : le composant `Task`
-
-Notre interface est encore simple mais se complexifie lentement. Typiquement, il peut être intéressant de donner aux éléments qui se répètent leur propre composant.
-
-Créez un fichier `lib/Task.svelte` avec la structure que vous connaissez désormais.
-
-Cette fois-ci, notre composant doit être en mesure d'accepter une propriété représentant la tâche à afficher. Voici comment déclarer une propriété `task` dans le fichier `Task.svelte` :
+Créez une nouvelle variable dans votre composant : `tasksLeftCount`, qui contiendra le nombre de tâches restantes.
 
 ```ts
-export let task: Task;
+let tasksLeftCount = ???
 ```
 
-Petit problème : le type `Task` n'est pas défini dans ce nouveau fichier. Nous allons le récupérer du fichier `TodoList.svelte`. Pour cela, il faut rendre le type visible de l'extérieur grâce au mot clé `export` :
+Vous pouvez compter les tâches restantes grâce à la fonction [filter](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Array/filter). En effet, il faut filtrer les tâches en fonction de leur statut, puis les compter. Utilisez `console.log` pour vérifier que votre opération fonctionne bien.
 
-```ts
-export interface Task {
-  ...
-}
-```
-
-Vous pouvez maintenant l'importer au début de votre fichier `Task.svelte` :
-
-```ts
-import { Task } from "./TodoList.svelte";
-```
-
-Déplacez le HTML permettant d'afficher une tâche dans le nouveau fichier `Task.svelte`.
-
-*Note : la balise `<li>` ne devrait pas faire partie du composant `Task.svelte` : la tâche ne "sait pas" qu'elle fait partie d'une liste, c'est le parent qui s'en sert dans ce contexte.*
-
-Dans `TodoList.svelte`, importez le composant `Task.svelte`. À l'endroit approprié, vous pouvez désormais appeler votre nouveau composant en lui passant une tache :
+Puis affichez le résultat sous la liste :
 
 ```html
-<Task task={task} />
+{tasksLeftCount} tâche(s) restante(s)
 ```
 
-N'oubliez pas de déplacer la partie du CSS appropriée dans le composant `Task.svelte`.
+En l'état, vous devriez observer que le nombre affiché est correct au départ, mais ne se met pas à jour quand vous cochez de nouvelles tâches.
 
-## Étape 5 : compter les tâches restantes
+En effet, il faut avertir Svelte que cette propriété est réactive. Pour cela, utilisez le caractère spécial `$` :
 
+```ts
+$: taskLeftCount = ???
+```
+
+L'interface doit maintenant réagir.
+
+Enfin, si toutes les tâches sont complétées, affichez "Félicitation, c'est terminé !" à la place du décompte. Vous pouvez pour cela utiliser le [if/else de Svelte](https://svelte.dev/docs#template-syntax-if).
+
+Voici le résultat attendu :
+
+<img src="doc/counter.png" width="150">
+<br/>
+<img src="doc/completed.png" width="220">
+
+## Étape 5 : bouton de complétion des tâches
+
+Nous allons ajouter un bouton permettant de compléter toutes les tâches d'un seul coup :
+
+<img src="doc/button.png" width="150">
+
+Svelte permet d'appeler une fonction en réponse à un événement :
+
+```html
+<button on:click={doSomething}>
+```
+
+Créez une fonction permettant de valider toutes les tâches, puis appelez-là au clic sur le bouton.
+
+Lorsqu'il n'y a pas de tâche à compléter, le bouton doit être désactivé :
+
+<img src="doc/disabled.png" width="200">
+
+## Étape 6 : ajout d'une nouvelle tâche
+
+Le but de cette étape est d'ajouter un champ permettant d'ajouter une nouvelle tâche :
+
+<img src="doc/form.png" width="200">
+
+Pour cela, créez un composant `NewTask` que vous inclurez au dessus de la liste.
+
+Ce composant doit contenir un formulaire composé d'un unique champ **requis**, de son label correctement associé et d'un bouton de soumission.
+
+Lorsque le formulaire est soumis, [émettez un événement](https://svelte.dev/tutorial/component-events). Le composant parent doit récupérer l'événement et ajouter la tâche à la liste.
+
+*Note : la soumission d'un formulaire déclenche par défaut le rechargement de la page. Pour empêchez cela, vous devrez utiliser le [modificateur d'événement](https://svelte.dev/tutorial/event-modifiers) approprié.*
+
+Pour les attributs de la nouvelle tâche, utilisez :
+- id : `Date.now()`
+- nom : le contenu du champ
+- statut : non effectuée
+
+Vérifiez également que :
+- le bouton de soumission est grisé lorsque le champ est vide
+- le formulaire peut être soumis en cliquant sur le bouton **et** en appuyant sur entrée (avec un seul écouteur d'événement)
+- le champ se vide après la soumission
+
+## Étape 7 : utiliser un store
+
+La définition de la liste des tâches n'a pas vraiment sa place dans le fichier `TodoList.svelte` : actuellement, notre implémentation mélange données et présentation.
+
+Pour remédier à cela, nous allons utiliser un [store](https://svelte.dev/tutorial/store-bindings).
+
+Créez un fichier `lib/stores.ts`. Ajoutez y un `writable` contenant la liste des tâches.
+
+Dans `TodoList.svelte`, remplacez la définition des tâches par un appel au store créé, en vous inspirant de la documentation.
+
+Remplacez également le code de modification des données (ajout d'une tâche, validation des tâches...) par un appel à la méthode `set` du store (voir [documentation](https://svelte.dev/tutorial/writable-stores)).
+
+Le compteur de tâches restantes, quant à lui, peut être remplacé par un état dérivé avec la fonction `derived`. De nouveau, inspirez-vous de la documentation pour remplacer le code nécessaire.
+
+En plus de la sépatation entre données et présentation, l'utilisation d'un store a un gros avantage : plusieurs composants peuvent s'adresser au même store sans passer par un système d'événement.
+
+Ainsi, vous allez pouvoir supprimer le code qui permettait de faire remonter l'événement de création d'une nouvelle tâche dans `NewTask.svelte`.
+
+À la place, l'ajout peut être effectué directement dans `NewTask.svelte`. Sans communiquer entre eux, les deux composants interagissent avec le même store, et les changements sont répercutés dans l'ensemble des composants y faisant référence.
+
+## Pour aller plus loin...
+
+De nombreuses améliorations sont possibles :
+- Suppression d'une tâche
+- Édition du nom
+- Stockage dans le `localStorage`...
