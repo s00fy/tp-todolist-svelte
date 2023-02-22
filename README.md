@@ -17,6 +17,8 @@ npm create vite@latest
 
 Pour le nom du projet, utilisez le caractère point (`.`) pour que l'application soit générée dans le dossier courant.
 
+Vite vous propose de supprimer les fichiers actuellement présents, acceptez.
+
 Choisissez **Svelte** en tant que framework et **TypeScript** en tant que variante.
 
 Installez les dépendances :
