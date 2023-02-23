@@ -22,13 +22,17 @@
       },
 
     ];
+
 </script>
 
 <main>
     <ul>
       {#each tasks as task}
           <li>
-            {task.name}
+              <input type="checkbox" name="check" value="{task.name}" id="{task.name}" bind:checked={task.statut}>
+            <label for="{task.name}" class="label">
+                {task.name}
+            </label>
           </li>
       {/each}
     </ul>
