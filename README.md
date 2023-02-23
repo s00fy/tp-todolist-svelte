@@ -37,6 +37,8 @@ L'application par défaut est accessible dans votre navigateur :
 
 <img src="doc/init.png" width="300px">
 
+Pour faciliter le développement, installez l'extension [Svelte for VSCode](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+
 Afin de démarrer d'un environnement vierge :
 
 - dans le fichier `App.svelte`, supprimer le contenu des balises `<script>`, `<main>` et `<style>`
@@ -68,7 +70,7 @@ Dans la partie `<script>`, créez une interface `Task` représentant une tâche 
 - un nom
 - un statut (effectuée ou non-effectuée)
 
-Créez une variable `tasks` contenant un tableau de `Task`. Utilisez TypeScript pour typer la varible. Voici par exemple un tableau de films :
+Créez une variable `tasks` contenant un tableau de `Task`. Utilisez TypeScript pour typer la variable. Voici par exemple un tableau de films :
 
 ```ts
 const movies: Movie[] = [
