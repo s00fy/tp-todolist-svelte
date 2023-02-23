@@ -22,6 +22,9 @@
       },
 
     ];
+    $: tasksLeftCount = tasks.filter(task => task.statut == false);
+    
+    console.log(tasksLeftCount);
 
 </script>
 
@@ -36,6 +39,7 @@
           </li>
       {/each}
     </ul>
+    <p> {tasksLeftCount} tâches restantes</p>
 
 </main>
 
