@@ -1,4 +1,7 @@
 <script lang="ts">
+  import Counter from "./Counter.svelte";
+
+
     interface Task{
         id: number;
         name: string;
@@ -22,7 +25,7 @@
       },
 
     ];
-    $: tasksLeftCount = tasks.filter(task => task.statut == false);
+    $: tasksLeftCount = tasks.filter(task => task.statut == false).length;
     
     console.log(tasksLeftCount);
 
@@ -39,7 +42,11 @@
           </li>
       {/each}
     </ul>
-    <p> {tasksLeftCount} tâches restantes</p>
+    {#if tasksLeftCount != 0}
+      <p> {tasksLeftCount} tâches restantes</p>
+    {:else}
+      <p> Félicitation, vous avez terminé !</p>
+    {/if}
 
 </main>
 
