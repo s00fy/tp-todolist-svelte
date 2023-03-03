@@ -38,6 +38,15 @@
       console.log(tasks);
     }
 
+    function onSubmit(e){
+      const formData = new FormData(e.target);
+      const data={};
+      for (let field of formData){
+        const [key, value] = field;
+        data[key] = value;
+      }
+
+    }
 
 
 
@@ -46,6 +55,12 @@
 </script>
 
 <main>
+    <form on:submit|preventDefault={onSubmit}>
+      <label for="newName" class="title">Nouvelle tâche
+      </label>
+      <input type="text" name="newName" required>
+      <button>Ajouter</button>
+    </form>
     <ul>
       {#each tasks as task}
           <li>
@@ -67,4 +82,8 @@
 </main>
 
 <style>
+  .title{
+    font-size: 1.5rem;
+    display: block;
+  }
 </style>
