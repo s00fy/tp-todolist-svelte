@@ -8,7 +8,7 @@
         name: string;
         status: boolean;
     }
-    const tasks: Task[] = [
+    let tasks: Task[] = [
       {
         id: 1,
         name: 'Manger',
@@ -34,18 +34,23 @@
     const checkAll = event => {
       tasks.forEach( task => {
         task.status = true;
-      })
+      });
+      tasks = tasks;
       console.log(tasks);
     }
+    
+    let newTask ="";
 
     function onSubmit(e){
-      const formData = new FormData(e.target);
-      const data={};
-      for (let field of formData){
-        const [key, value] = field;
-        data[key] = value;
-      }
-
+      let data={
+        id : Date.now(),
+        name :  newTask,
+        status : false,
+      };
+      console.log(data);
+      tasks.push(data);
+      tasks = tasks;
+      newTask = "";
     }
 
 
@@ -56,10 +61,9 @@
 
 <main>
     <form on:submit|preventDefault={onSubmit}>
-      <label for="newName" class="title">Nouvelle tâche
-      </label>
-      <input type="text" name="newName" required>
-      <button>Ajouter</button>
+      <label for="newTask" class="title">Nouvelle tâche</label>
+      <input type="text" name="newTask" id="newTask" bind:value={newTask} required>
+      <button disabled='{!newTask}'>Ajouter</button>
     </form>
     <ul>
       {#each tasks as task}
